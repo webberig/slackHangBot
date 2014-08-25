@@ -1,0 +1,19 @@
+services:
+    hangman.service.slack_messenger:
+        class: Webberig\SlackHangBot\Service\SlackMessenger
+        arguments:
+          - @cl_slack.api_method_helper
+          - @templating
+
+
+    hangman.service.gamemanager:
+        class: Webberig\SlackHangBot\Service\GameManager
+        arguments:
+          - @doctrine.orm.entity_manager
+          - @hangman.service.slack_messenger
+
+
+    hangman.service.command_handler:
+        class: Webberig\SlackHangBot\Service\CommandHandler
+        arguments:
+          - @hangman.service.gamemanager

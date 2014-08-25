@@ -1,0 +1,8 @@
+services:
+    hangman.controller.slack:
+        class: Webberig\SlackHangBot\Controller\Slack
+        scope: request
+        arguments:
+             - @hangman.service.command_handler
+#            - @templating
+#            - @router

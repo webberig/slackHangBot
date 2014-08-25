@@ -1,0 +1,6 @@
+services:
+#    website.command.example:
+#        class: Namespace\Class
+#        arguments: ~
+#        tags:
+#            -  { name: console.command }

@@ -1,0 +1,4 @@
+slash_command:
+    pattern: /
+    defaults:
+        _controller: hangman.controller.slack:inboundSlashCommand

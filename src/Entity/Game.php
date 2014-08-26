@@ -267,4 +267,22 @@ class Game {
     public function isLost() {
         return $this->status == self::STATUS_LOST;
     }
+
+    /**
+     * @return string
+     */
+    public function getUserStartedName()
+    {
+        return $this->userStartedName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharacters()
+    {
+        return str_split($this->characters);
+    }
+
+
 }

@@ -41,7 +41,7 @@ class GameAction {
     }
 
     /**
-     * @return mixed
+     * @return Game|null
      */
     public function getGame()
     {

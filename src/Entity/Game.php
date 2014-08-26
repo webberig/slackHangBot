@@ -149,12 +149,12 @@ class Game {
      * @throws \InvalidArgumentException Will throw exception if the character is already tried or invalid
      */
     public function char($char, $user) {
-        $chars = str_split($this->characters);
+        $chars = $this->getCharacters();
         if (strlen($char) !== 1) {
             throw new \InvalidArgumentException("Char must be a single letter");
         }
         $char = strtolower($char);
-        if (in_array($char, $this->$chars)) {
+        if (in_array($char, $chars)) {
             throw new \InvalidArgumentException("Already guessed this letter, focus!");
         }
         $chars[] = $char;
@@ -197,12 +197,12 @@ class Game {
             $this->status = self::STATUS_LOST;
         }
 
-        $triedCharacters = str_split($this->characters);
+        $triedCharacters = $this->getCharacters();
         // Check if all characters have been guessed
         $guessed = 0;
         $chars = str_split($this->word);
         foreach ($chars as $c) {
-            if (in_array($c, $this->$triedCharacters)) {
+            if (in_array($c, $triedCharacters)) {
                 $guessed++;
             }
         }

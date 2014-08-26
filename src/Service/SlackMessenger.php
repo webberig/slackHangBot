@@ -10,6 +10,7 @@ namespace Webberig\SlackHangBot\Service;
 
 
 use CL\Slack\Api\Method\MethodFactory;
+use Symfony\Component\Templating\EngineInterface;
 use Webberig\SlackHangBot\Entity\Game;
 use Webberig\SlackHangBot\Entity\GameAction;
 use Webberig\SlackHangBot\SlackCommandRequest;
@@ -18,16 +19,19 @@ class SlackMessenger {
     private $slack;
     private $twig;
 
-    public function __construct($slack, $twig)
+    public function __construct($slack, EngineInterface $twig)
     {
         $this->slack = $slack;
         $this->twig = $twig;
     }
 
     private function post($message, GameAction $action) {
-        $content = $this->twig;
+        $content = $this->twig->render("::slack.text.twig", array(
+            'game' => $action->getGame(),
+            'message' => $message
+        ));
         $response = $this->slack->send(MethodFactory::METHOD_CHAT_POSTMESSAGE, [
-            'text' => $message,
+            'text' => "```" . $content . "```",
             'channel'   => $action->getChannelName()
         ]);
         return $response;

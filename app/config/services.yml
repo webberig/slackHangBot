@@ -17,3 +17,8 @@ services:
         class: Webberig\SlackHangBot\Service\CommandHandler
         arguments:
           - @hangman.service.gamemanager
+
+    hangman.service.twigextension:
+        class: Webberig\SlackHangBot\Service\HangmanExtension
+        tags:
+            - { name: twig.extension }

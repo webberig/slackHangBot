@@ -11,7 +11,7 @@ namespace Webberig\SlackHangBot\Service;
 
 use Webberig\SlackHangBot\Entity\Game;
 
-class HangmanExtension extends Twig_Extension
+class HangmanExtension extends \Twig_Extension
 {
     public function getName()
     {
@@ -34,7 +34,7 @@ class HangmanExtension extends Twig_Extension
     }
 
     public function getHangmanGuesses (Game $game) {
-        return implode(" ", str_split($game->getCharacters()));
+        return implode(" ", $game->getCharacters());
     }
     public function getHangmanWord (Game $game) {
         $res = "";

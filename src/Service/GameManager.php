@@ -50,6 +50,7 @@ class GameManager {
         if ($hint) {
             $game->setHint($hint);
         }
+        $action->setGame($game);
         $this->slack->postStarting($action);
         $this->em->persist($game);
         $this->em->flush();
@@ -67,6 +68,7 @@ class GameManager {
         }
         $action->getGame()->setHint($hint);
         $this->slack->postChangeHint($action);
+        $this->em->flush();
     }
     public function guessWord(GameAction $action, $word) {
         if (!$action->getGame()) {
@@ -80,6 +82,7 @@ class GameManager {
         } else {
             $this->slack->postGuessWordFail($action, $word);
         }
+        $this->em->flush();
         return $return;
     }
 
@@ -102,6 +105,7 @@ class GameManager {
             }
 
         }
+        $this->em->flush();
         return $return;
     }
 
@@ -112,7 +116,8 @@ class GameManager {
         if ($action->getGame()->getUserStarted() !== $action->getPlayerId()) {
             throw new \InvalidArgumentException("You are not the game master!");
         }
-        $this->slack->postAbort($action);
         $action->getGame()->abort();
+        $this->slack->postAbort($action);
+        $this->em->flush();
     }
 }

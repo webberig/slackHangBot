@@ -56,53 +56,41 @@ class GameManager {
 
         return $game;
     }
-    public function changeHint($hint)
+    public function changeHint(GameAction $action, $hint)
     {
-        $game = $this->currentGame;
-        if (!$game) {
+        if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
 
-        if ($game->getUserStarted() !== $this->user_id) {
+        if ($action->getGame()->getUserStarted() !== $action->getPlayerId()) {
             throw new \InvalidArgumentException("You are not the game master!");
         }
-        $game->setHint($hint);
+        $action->getGame()->setHint($hint);
 
     }
-    public function guessWord($word) {
-        $game = $this->currentGame;
-        if (!$game) {
+    public function guessWord(GameAction $action, $word) {
+        if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
 
-        return $game->guess($word, $this->user_id);
+        return $action->getGame()->guess($word, $action->getPlayerId());
     }
 
-    public function guessCharacter($char) {
-        $game = $this->currentGame;
-        if (!$game) {
+    public function guessCharacter(GameAction $action, $char) {
+        if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
 
-        return $game->char($char, $this->user_id);
+        return $action->getGame()->char($char, $action->getPlayerId());
     }
 
-    /**
-     * @return null|\Webberig\SlackHangBot\Entity\Game
-     */
-    public function getCurrentGame()
-    {
-        return $this->currentGame;
-    }
-
-    public function abort() {
-        $game = $this->currentGame;
-        if (!$game) {
+    public function abort(GameAction $action) {
+        if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
-        if ($game->getUserStarted() !== $this->user_id) {
+        if ($action->getGame()->getUserStarted() !== $action->getPlayerId()) {
             throw new \InvalidArgumentException("You are not the game master!");
         }
-        $game->abort();
+        $action->getGame()->abort();
     }
 }

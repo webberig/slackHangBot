@@ -52,7 +52,7 @@ class CommandHandler {
                 // hint {hint}
                 if (count($parts) > 0) {
                     $hint = implode(" ", $parts);
-                    $this->gm->changeHint($hint);
+                    $this->gm->changeHint($action, $hint);
                     return "Hint is changed";
                 } else {
                     throw new \InvalidArgumentException("Please provide a hint");
@@ -62,9 +62,9 @@ class CommandHandler {
                 if (count($parts) > 0) {
                     $word = array_shift($parts);
                     if (strlen($word) == 1) {
-                        $this->gm->guessCharacter($word);
+                        $this->gm->guessCharacter($action, $word);
                     } else {
-                        $this->gm->guessWord($word);
+                        $this->gm->guessWord($action, $word);
                     }
                     return "";
 
@@ -73,7 +73,7 @@ class CommandHandler {
                 }
             case 'abort':
                 // abort
-                $this->gm->abort();
+                $this->gm->abort($action);
                 return "Game aborted";
             case 'highscore':
                 return "This is not implemented yet, sorry!";

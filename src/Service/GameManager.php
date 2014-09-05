@@ -94,7 +94,7 @@ class GameManager {
         if ($return) {
             if ($action->getGame()->isWon()) {
                 $this->slack->postWon($action, $action->getGame()->getWord());
-            } elseif ($action->getGame()->isLost()) {
+            } elseif ($action->getGame()->isInProgress()) {
                 $this->slack->postGuessCharacterSuccess($action, $char);
             }
         } else {

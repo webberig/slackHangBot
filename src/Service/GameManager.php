@@ -13,7 +13,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Webberig\SlackHangBot\Entity\Game;
 use Webberig\SlackHangBot\Entity\GameAction;
 
-class GameManager {
+class GameManager
+{
     private $slack;
     private $em;
 
@@ -28,10 +29,12 @@ class GameManager {
     {
         // @todo: Get game from db
         $repo = $this->em->getRepository("Webberig\\SlackHangBot\\Entity\\Game");
-        $game = $repo->findOneBy([
+        $game = $repo->findOneBy(
+            [
                 "channel" => $channel,
                 "status" => Game::STATUS_IN_PROGRESS
-            ]);
+            ]
+        );
         return $game;
     }
 
@@ -57,6 +60,7 @@ class GameManager {
 
         return $game;
     }
+
     public function changeHint(GameAction $action, $hint)
     {
         if (!$action->getGame()) {
@@ -70,13 +74,15 @@ class GameManager {
         $this->slack->postChangeHint($action);
         $this->em->flush();
     }
-    public function guessWord(GameAction $action, $word) {
+
+    public function guessWord(GameAction $action, $word)
+    {
         if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
         $return = $action->getGame()->guess($word, $action->getPlayerId());
         if ($action->getGame()->isWon()) {
-            $this->slack->postWon($action, $word);
+            $this->slack->postWon($action);
         } elseif ($action->getGame()->isLost()) {
             $this->slack->postLost($action);
         } else {
@@ -86,14 +92,15 @@ class GameManager {
         return $return;
     }
 
-    public function guessCharacter(GameAction $action, $char) {
+    public function guessCharacter(GameAction $action, $char)
+    {
         if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }
         $return = $action->getGame()->char($char, $action->getPlayerId());
         if ($return) {
             if ($action->getGame()->isWon()) {
-                $this->slack->postWon($action, $action->getGame()->getWord());
+                $this->slack->postWon($action);
             } elseif ($action->getGame()->isInProgress()) {
                 $this->slack->postGuessCharacterSuccess($action, $char);
             }
@@ -109,7 +116,8 @@ class GameManager {
         return $return;
     }
 
-    public function abort(GameAction $action) {
+    public function abort(GameAction $action)
+    {
         if (!$action->getGame()) {
             throw new \InvalidArgumentException("No game in progress");
         }

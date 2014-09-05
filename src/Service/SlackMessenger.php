@@ -48,8 +48,8 @@ class SlackMessenger {
         return $this->post("The game is lost, nobody wins", $action);
     }
 
-    public function postWon(GameAction $action) {
-        return $this->post($action->getPlayerName() . " won the game!", $action);
+    public function postWon(GameAction $action, $word) {
+        return $this->post($action->getPlayerName() . " won the game! The word was: ". $word .".", $action);
     }
 
     public function postGuessCharacterSuccess(GameAction $action, $char) {

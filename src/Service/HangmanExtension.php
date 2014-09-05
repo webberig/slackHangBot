@@ -27,7 +27,7 @@ class HangmanExtension extends \Twig_Extension
     }
 
     public function getHangmanArt($line, $tries) {
-        $line = $line + ($tries * 6);
+        $line = $line + ($tries * 7);
         $txt = file_get_contents(__DIR__ . "/../../app/Resources/hangman.txt");
         $lines = explode("\n", $txt);
         return $lines[$line];

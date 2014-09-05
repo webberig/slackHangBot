@@ -76,7 +76,7 @@ class GameManager {
         }
         $return = $action->getGame()->guess($word, $action->getPlayerId());
         if ($action->getGame()->isWon()) {
-            $this->slack->postWon($action);
+            $this->slack->postWon($action, $word);
         } elseif ($action->getGame()->isLost()) {
             $this->slack->postLost($action);
         } else {
@@ -93,7 +93,7 @@ class GameManager {
         $return = $action->getGame()->char($char, $action->getPlayerId());
         if ($return) {
             if ($action->getGame()->isWon()) {
-                $this->slack->postWon($action);
+                $this->slack->postWon($action, $action->getGame()->getWord());
             } elseif ($action->getGame()->isLost()) {
                 $this->slack->postGuessCharacterSuccess($action, $char);
             }

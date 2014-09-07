@@ -106,7 +106,6 @@ class GameManager
         if ($game->getUserStarted() == $action->getPlayerId()) {
             throw new \InvalidArgumentException("Cannot guess during your own game.");
         }
-
         $return = $game->char($char, $action->getPlayerId());
         if ($return) {
             if ($game->isWon()) {

@@ -57,7 +57,7 @@ class Game {
      *
      * @ORM\Column(name="hint", type="string", length=255, nullable=false)
      */
-    protected $hint;
+    protected $hint = "";
 
     /**
      * @var string

@@ -57,7 +57,7 @@ class HangmanExtension extends \Twig_Extension
                 $res .= "_";
             }
         }
-        return implode(" ", str_split($res));
+        return "`" . implode(" ", str_split($res)) . "`";
     }
 }
  

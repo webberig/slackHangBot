@@ -1,0 +1,10 @@
+{% include '::hangmanart.text.twig' %}
+
+*The game is lost, nobody wins*
+
+The word was: {{ game.word }}
+
+Guesses: {{ hangmanGuesses(game) }}
+Hint: {{ game.hint }}
+Game master: {{ game.userStartedName }}
+

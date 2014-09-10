@@ -13,7 +13,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Webberig\SlackHangBot\Entity\Game;
 use Webberig\SlackHangBot\Entity\GameAction;
 
-class GameManager {
+class GameManager
+{
     private $slack;
     private $em;
 
@@ -28,10 +29,12 @@ class GameManager {
     {
         // @todo: Get game from db
         $repo = $this->em->getRepository("Webberig\\SlackHangBot\\Entity\\Game");
-        $game = $repo->findOneBy([
+        $game = $repo->findOneBy(
+            [
                 "channel" => $channel,
                 "status" => Game::STATUS_IN_PROGRESS
-            ]);
+            ]
+        );
         return $game;
     }
 
@@ -57,27 +60,35 @@ class GameManager {
 
         return $game;
     }
+
     public function changeHint(GameAction $action, $hint)
     {
-        if (!$action->getGame()) {
+        $game = $action->getGame();
+        if (!$game) {
             throw new \InvalidArgumentException("No game in progress");
         }
 
-        if ($action->getGame()->getUserStarted() !== $action->getPlayerId()) {
+        if ($game->getUserStarted() !== $action->getPlayerId()) {
             throw new \InvalidArgumentException("You are not the game master!");
         }
-        $action->getGame()->setHint($hint);
+        $game->setHint($hint);
         $this->slack->postChangeHint($action);
         $this->em->flush();
     }
-    public function guessWord(GameAction $action, $word) {
-        if (!$action->getGame()) {
-            throw new \InvalidArgumentException("No game in progress");
+
+    public function guessWord(GameAction $action, $word)
+    {
+        $game = $action->getGame();
+        if (!$game) {
+            throw new \InvalidArgumentException("No game in progress.");
         }
-        $return = $action->getGame()->guess($word, $action->getPlayerId());
-        if ($action->getGame()->isWon()) {
+        if ($game->getUserStarted() == $action->getPlayerId()) {
+            throw new \InvalidArgumentException("Cannot guess during your own game.");
+        }
+        $return = $game->guess($word, $action->getPlayerId());
+        if ($game->isWon()) {
             $this->slack->postWon($action);
-        } elseif ($action->getGame()->isLost()) {
+        } elseif ($game->isLost()) {
             $this->slack->postLost($action);
         } else {
             $this->slack->postGuessWordFail($action, $word);
@@ -86,19 +97,24 @@ class GameManager {
         return $return;
     }
 
-    public function guessCharacter(GameAction $action, $char) {
-        if (!$action->getGame()) {
+    public function guessCharacter(GameAction $action, $char)
+    {
+        $game = $action->getGame();
+        if (!$game) {
             throw new \InvalidArgumentException("No game in progress");
         }
-        $return = $action->getGame()->char($char, $action->getPlayerId());
+        if ($game->getUserStarted() == $action->getPlayerId()) {
+            throw new \InvalidArgumentException("Cannot guess during your own game.");
+        }
+        $return = $game->char($char, $action->getPlayerId());
         if ($return) {
-            if ($action->getGame()->isWon()) {
+            if ($game->isWon()) {
                 $this->slack->postWon($action);
-            } elseif ($action->getGame()->isLost()) {
+            } elseif ($game->isInProgress()) {
                 $this->slack->postGuessCharacterSuccess($action, $char);
             }
         } else {
-            if ($action->getGame()->isLost()) {
+            if ($game->isLost()) {
                 $this->slack->postLost($action);
             } else {
                 $this->slack->postGuessWordFail($action, $char);
@@ -109,14 +125,16 @@ class GameManager {
         return $return;
     }
 
-    public function abort(GameAction $action) {
-        if (!$action->getGame()) {
+    public function abort(GameAction $action)
+    {
+        $game = $action->getGame();
+        if (!$game) {
             throw new \InvalidArgumentException("No game in progress");
         }
-        if ($action->getGame()->getUserStarted() !== $action->getPlayerId()) {
+        if ($game->getUserStarted() !== $action->getPlayerId()) {
             throw new \InvalidArgumentException("You are not the game master!");
         }
-        $action->getGame()->abort();
+        $game->abort();
         $this->slack->postAbort($action);
         $this->em->flush();
     }

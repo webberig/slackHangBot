@@ -57,7 +57,7 @@ class Game {
      *
      * @ORM\Column(name="hint", type="string", length=255, nullable=false)
      */
-    protected $hint;
+    protected $hint = "";
 
     /**
      * @var string
@@ -264,8 +264,13 @@ class Game {
     public function isWon() {
         return $this->status == self::STATUS_WON;
     }
+
     public function isLost() {
         return $this->status == self::STATUS_LOST;
+    }
+
+    public function isInProgress() {
+        return $this->status == self::STATUS_IN_PROGRESS;
     }
 
     /**

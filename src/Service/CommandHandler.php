@@ -47,7 +47,7 @@ class CommandHandler {
                 $this->gm->startGame($action, $word, $hint);
                 return "Game has started";
             case 'help':
-                return "Help not available yet, ask @mathieu";
+                return "Help not available yet, ask @mathieumaes";
             case 'hint':
                 // hint {hint}
                 if (count($parts) > 0) {

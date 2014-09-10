@@ -86,4 +86,9 @@ class SlackMessenger
     {
         return $this->post("abort", $action);
     }
+
+    public function postHelp(GameAction $action)
+    {
+        return $this->post("help", $action);
+    }
 }

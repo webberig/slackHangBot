@@ -86,12 +86,11 @@ class GameManager
             throw new \InvalidArgumentException("Cannot guess during your own game.");
         }
         $return = $game->guess($word, $action->getPlayerId());
+        $this->slack->postGuessWordFail($action, $word);
         if ($game->isWon()) {
             $this->slack->postWon($action);
         } elseif ($game->isLost()) {
             $this->slack->postLost($action);
-        } else {
-            $this->slack->postGuessWordFail($action, $word);
         }
         $this->em->flush();
         return $return;
@@ -108,18 +107,15 @@ class GameManager
         }
         $return = $game->char($char, $action->getPlayerId());
         if ($return) {
+            $this->slack->postGuessCharacterSuccess($action, $char);
             if ($game->isWon()) {
                 $this->slack->postWon($action);
-            } elseif ($game->isInProgress()) {
-                $this->slack->postGuessCharacterSuccess($action, $char);
             }
         } else {
+            $this->slack->postGuessCharacterFail($action, $char);
             if ($game->isLost()) {
                 $this->slack->postLost($action);
-            } else {
-                $this->slack->postGuessWordFail($action, $char);
             }
-
         }
         $this->em->flush();
         return $return;
@@ -136,6 +132,12 @@ class GameManager
         }
         $game->abort();
         $this->slack->postAbort($action);
+        $this->em->flush();
+    }
+
+    public function showHelp(GameAction $action)
+    {
+        $this->slack->postHelp($action);
         $this->em->flush();
     }
 }

@@ -1,27 +1,26 @@
 server {
     listen  80;
 
-    root {{ doc_root }};
-    index index.html index.php;
+    root {{ doc_root }}/web;
+    index /app.php;
 
-    server_name {{ servername }};
+    server_name {{ servername }} {{ ansible_eth1.ipv4.address }};
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files $uri @app;
     }
 
-    error_page 404 /404.html;
-
-    error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        root /usr/share/nginx/www;
-    }
-
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    location @app {
         fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /vagrant/web/app.php;
+        fastcgi_param SYMFONY_ENV 'dev';
+        fastcgi_param SYMFONY_DEBUG 1;
+    }
+
+    location ~ /\. {
+        access_log off;
+        log_not_found off;
+        deny all;
     }
 }

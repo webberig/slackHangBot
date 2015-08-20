@@ -2,7 +2,7 @@ services:
     hangman.service.slack_messenger:
         class: Webberig\SlackHangBot\Service\SlackMessenger
         arguments:
-          - @cl_slack.api_method_helper
+          - @cl_slack.api_client
           - @templating
 
 

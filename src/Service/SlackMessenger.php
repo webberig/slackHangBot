@@ -39,7 +39,7 @@ class SlackMessenger
             )
         );
         $payload = new ChatPostMessagePayload();
-        $payload->setChannel($action->getChannelName());
+        $payload->setChannel("#" . $action->getChannelName());
         $payload->setText($content);
         $payload->setUsername("Hangbot");
 

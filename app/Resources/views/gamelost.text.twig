@@ -4,7 +4,4 @@
 
 The word was: {{ game.word }}
 
-Guesses: {{ hangmanGuesses(game) }}
-Hint: {{ game.hint }}
-Game master: {{ game.userStartedName }}
-
+{% include '::hangmanart.meta.twig' %}

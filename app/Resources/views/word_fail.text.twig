@@ -4,6 +4,4 @@
 
 {{ hangmanWord(game) }}
 
-Guesses: {{ hangmanGuesses(game) }}
-Hint: {{ game.hint }}
-Game master: {{ game.userStartedName }}
+{% include '::hangmanart.meta.twig' %}

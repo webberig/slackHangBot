@@ -86,11 +86,12 @@ class GameManager
             throw new \InvalidArgumentException("Cannot guess during your own game.");
         }
         $return = $game->guess($word, $action->getPlayerId());
-        $this->slack->postGuessWordFail($action, $word);
         if ($game->isWon()) {
             $this->slack->postWon($action);
         } elseif ($game->isLost()) {
             $this->slack->postLost($action);
+        } else {
+	        $this->slack->postGuessWordFail($action, $word);
         }
         $this->em->flush();
         return $return;
